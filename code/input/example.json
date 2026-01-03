@@ -1,0 +1,378 @@
+{
+  "project_name": "multi_satellite_scheduling_example",
+  "planner_input": {
+    "satellites": ["S1", "S2", "S128"],
+    "tasks": [
+      {
+        "id": "T1",
+        "name": "Task_T1",
+        "profit": 8,
+        "duration": 40,
+        "deadline": "23:59:59"
+      },
+      {
+        "id": "T2",
+        "name": "Task_T2",
+        "profit": 9,
+        "duration": 35,
+        "deadline": "23:59:59"
+      },
+      {
+        "id": "T3",
+        "name": "Task_T3",
+        "profit": 7,
+        "duration": 30,
+        "deadline": "23:59:59"
+      },
+      {
+        "id": "T4",
+        "name": "Task_T4",
+        "profit": 15,
+        "duration": 30,
+        "deadline": "23:59:59"
+      },
+      {
+        "id": "T5",
+        "name": "Task_T5",
+        "profit": 8,
+        "duration": 45,
+        "deadline": "23:59:59"
+      },
+      {
+        "id": "T6",
+        "name": "Task_T6",
+        "profit": 11,
+        "duration": 55,
+        "deadline": "23:59:59"
+      },
+      {
+        "id": "T7",
+        "name": "Task_T7",
+        "profit": 6,
+        "duration": 25,
+        "deadline": "23:59:59"
+      },
+      {
+        "id": "T500",
+        "name": "Task_T500",
+        "profit": 0,
+        "duration": 0,
+        "deadline": "23:59:59"
+      }
+    ],
+    "windows": {
+      "T1": {
+        "S1": [
+          {"start": "08:00:00", "end": "08:00:40"},
+          {"start": "09:30:00", "end": "09:31:00"},
+          {"start": "15:28:00", "end": "15:28:50"}
+        ]
+      },
+      "T2": {
+        "S2": [
+          {"start": "08:57:00", "end": "08:57:35"},
+          {"start": "10:47:00", "end": "10:47:55"},
+          {"start": "15:15:00", "end": "15:15:40"}
+        ]
+      },
+      "T3": {
+        "S128": [
+          {"start": "09:50:00", "end": "09:50:45"},
+          {"start": "12:15:00", "end": "12:16:10"},
+          {"start": "15:27:00", "end": "15:27:52"}
+        ]
+      },
+      "T4": {
+        "S1": [
+          {"start": "08:00:00", "end": "08:00:40"}
+        ]
+      },
+      "T5": {
+        "S128": [
+          {"start": "09:50:00", "end": "09:50:45"}
+        ]
+      },
+      "T6": {
+        "S128": [
+          {"start": "12:15:00", "end": "12:16:10"}
+        ]
+      },
+      "T500": {
+        "S1": [
+          {"start": "15:28:00", "end": "15:28:50"}
+        ]
+      }
+    },
+    "scheduled_tasks": {
+      "S1": [
+        {
+          "task_id": "T1",
+          "window_index": 0,
+          "actual_start": "08:00:00",
+          "actual_end": "08:00:40",
+          "profit": 8
+        },
+        {
+          "task_id": "T4",
+          "window_index": 0,
+          "actual_start": "09:30:00",
+          "actual_end": "09:31:00",
+          "profit": 7
+        },
+        {
+          "task_id": "T500",
+          "window_index": 0,
+          "actual_start": "15:28:00",
+          "actual_end": "15:28:50",
+          "profit": 15
+        }
+      ],
+      "S2": [
+        {
+          "task_id": "T2",
+          "window_index": 0,
+          "actual_start": "08:57:00",
+          "actual_end": "08:57:35",
+          "profit": 9
+        },
+        {
+          "task_id": "T3",
+          "window_index": 1,
+          "actual_start": "10:47:00",
+          "actual_end": "10:47:55",
+          "profit": 10
+        },
+        {
+          "task_id": "T5",
+          "window_index": 2,
+          "actual_start": "15:15:00",
+          "actual_end": "15:15:40",
+          "profit": 12
+        }
+      ],
+      "S128": [
+        {
+          "task_id": "T3",
+          "window_index": 0,
+          "actual_start": "09:50:00",
+          "actual_end": "09:50:45",
+          "profit": 8
+        },
+        {
+          "task_id": "T6",
+          "window_index": 1,
+          "actual_start": "12:15:00",
+          "actual_end": "12:16:10",
+          "profit": 11
+        },
+        {
+          "task_id": "T5",
+          "window_index": 2,
+          "actual_start": "15:27:00",
+          "actual_end": "15:27:52",
+          "profit": 9
+        }
+      ]
+    },
+    "unscheduled_tasks": ["T7"],
+    "total_profit": 89,
+    "maneuver_time": 120
+  },
+  "behavior_definitions": {
+    "Task_T1": {
+      "type": "Sequence",
+      "name": "T1_Mission",
+      "children": [
+        {
+          "type": "Action",
+          "name": "ManeuverToTarget",
+          "params": ["target_position_T1"]
+        },
+        {
+          "type": "Condition",
+          "expression": "time >= window_start && time <= window_end"
+        },
+        {
+          "type": "Action",
+          "name": "ExecuteObservation",
+          "params": ["T1", 40]
+        },
+        {
+          "type": "Action",
+          "name": "ReportCompletion",
+          "params": ["T1", "SUCCESS"]
+        }
+      ]
+    },
+    "Task_T2": {
+      "type": "Sequence",
+      "name": "T2_Mission",
+      "children": [
+        {
+          "type": "Action",
+          "name": "ManeuverToTarget",
+          "params": ["target_position_T2"]
+        },
+        {
+          "type": "Condition",
+          "expression": "time >= window_start && time <= window_end"
+        },
+        {
+          "type": "Action",
+          "name": "ExecuteObservation",
+          "params": ["T2", 35]
+        },
+        {
+          "type": "Action",
+          "name": "ReportCompletion",
+          "params": ["T2", "SUCCESS"]
+        }
+      ]
+    },
+    "Task_T3": {
+      "type": "Sequence",
+      "name": "T3_Mission",
+      "children": [
+        {
+          "type": "Action",
+          "name": "ManeuverToTarget",
+          "params": ["target_position_T3"]
+        },
+        {
+          "type": "Selector",
+          "name": "Window_Selection",
+          "children": [
+            {
+              "type": "Sequence",
+              "children": [
+                {
+                  "type": "Condition",
+                  "expression": "current_window == 0 && time >= 09:50:00 && time <= 09:50:45"
+                },
+                {
+                  "type": "Action",
+                  "name": "ExecuteObservation",
+                  "params": ["T3", 30]
+                }
+              ]
+            },
+            {
+              "type": "Sequence",
+              "children": [
+                {
+                  "type": "Condition",
+                  "expression": "current_window == 1 && time >= 10:47:00 && time <= 10:47:55"
+                },
+                {
+                  "type": "Action",
+                  "name": "ExecuteObservation",
+                  "params": ["T3", 30]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Action",
+          "name": "ReportCompletion",
+          "params": ["T3", "SUCCESS"]
+        }
+      ]
+    },
+    "Task_T4": {
+      "type": "Sequence",
+      "name": "T4_Mission",
+      "children": [
+        {
+          "type": "Action",
+          "name": "ManeuverToTarget",
+          "params": ["target_position_T4"]
+        },
+        {
+          "type": "Action",
+          "name": "ExecuteObservation",
+          "params": ["T4", 30]
+        },
+        {
+          "type": "Action",
+          "name": "ReportCompletion",
+          "params": ["T4", "SUCCESS"]
+        }
+      ]
+    },
+    "Task_T5": {
+      "type": "Sequence",
+      "name": "T5_Mission",
+      "children": [
+        {
+          "type": "Action",
+          "name": "ManeuverToTarget",
+          "params": ["target_position_T5"]
+        },
+        {
+          "type": "Action",
+          "name": "ExecuteObservation",
+          "params": ["T5", 45]
+        },
+        {
+          "type": "Action",
+          "name": "ReportCompletion",
+          "params": ["T5", "SUCCESS"]
+        }
+      ]
+    },
+    "Task_T6": {
+      "type": "Sequence",
+      "name": "T6_Mission",
+      "children": [
+        {
+          "type": "Action",
+          "name": "ManeuverToTarget",
+          "params": ["target_position_T6"]
+        },
+        {
+          "type": "Action",
+          "name": "ExecuteObservation",
+          "params": ["T6", 55]
+        },
+        {
+          "type": "Action",
+          "name": "ReportCompletion",
+          "params": ["T6", "SUCCESS"]
+        }
+      ]
+    },
+    "Task_T7": {
+      "type": "Sequence",
+      "name": "T7_Mission_Unscheduled",
+      "children": [
+        {
+          "type": "Action",
+          "name": "LogUnscheduled",
+          "params": ["T7", "No available window"]
+        }
+      ]
+    },
+    "Task_T500": {
+      "type": "Sequence",
+      "name": "T500_Mission",
+      "children": [
+        {
+          "type": "Action",
+          "name": "ManeuverToTarget",
+          "params": ["target_position_T500"]
+        },
+        {
+          "type": "Action",
+          "name": "ExecuteObservation",
+          "params": ["T500", 0]
+        },
+        {
+          "type": "Action",
+          "name": "ReportCompletion",
+          "params": ["T500", "SUCCESS"]
+        }
+      ]
+    }
+  }
+}
