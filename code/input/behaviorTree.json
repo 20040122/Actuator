@@ -1,0 +1,260 @@
+{
+    "library_id": "observation_behaviors",
+    "version": "1.0.0",
+    "description": "Behavior tree definitions for satellite observation missions",
+    "behavior_definitions": {
+        "Observation_Mission": {
+            "type": "Sequence",
+            "name": "Observation_Mission",
+            "description": "Complete observation task: attitude adjust -> capture -> data handling",
+            "children": [
+                {
+                    "type": "Condition",
+                    "name": "Check_Prerequisites",
+                    "description": "Verify satellite is ready for observation",
+                    "expression": "battery > 20 && storage_available > 100 && payload_status == 'READY'",
+                    "variables": [
+                        "battery",
+                        "storage_available",
+                        "payload_status"
+                    ]
+                },
+                {
+                    "type": "Condition",
+                    "name": "Check_Time_Window",
+                    "description": "Verify current time is within observation window",
+                    "expression": "current_time >= window_start && current_time <= window_end",
+                    "variables": [
+                        "current_time",
+                        "window_start",
+                        "window_end"
+                    ]
+                },
+                {
+                    "type": "Action",
+                    "name": "Acquire_Semaphore",
+                    "description": "Acquire shared resource if needed",
+                    "command": "SEMAPHORE_ACQUIRE",
+                    "params": {
+                        "semaphore_id": "${resource_semaphore}",
+                        "timeout_s": 30
+                    },
+                    "optional": true
+                },
+                {
+                    "type": "Action",
+                    "name": "Attitude_Adjustment",
+                    "description": "Adjust satellite attitude to point at target",
+                    "command": "ATTITUDE_ADJUST",
+                    "params": {
+                        "target_lat": "${target_lat}",
+                        "target_lon": "${target_lon}",
+                        "mode": "TARGET_POINTING"
+                    },
+                    "timeout_s": "${attitude_adjustment_time_s}"
+                },
+                {
+                    "type": "Condition",
+                    "name": "Verify_Attitude",
+                    "description": "Confirm attitude adjustment completed",
+                    "expression": "attitude_error < 0.1",
+                    "variables": [
+                        "attitude_error"
+                    ]
+                },
+                {
+                    "type": "Action",
+                    "name": "Configure_Payload",
+                    "description": "Configure camera/sensor for observation",
+                    "command": "PAYLOAD_CONFIG",
+                    "params": {
+                        "mode": "OBSERVATION",
+                        "resolution": "${resolution}"
+                    }
+                },
+                {
+                    "type": "Action",
+                    "name": "Execute_Observation",
+                    "description": "Capture imagery of target",
+                    "command": "PAYLOAD_CAPTURE",
+                    "params": {
+                        "target_lat": "${target_lat}",
+                        "target_lon": "${target_lon}",
+                        "duration_s": "${observation_duration_s}"
+                    }
+                },
+                {
+                    "type": "Action",
+                    "name": "Store_Data",
+                    "description": "Store captured data to onboard storage",
+                    "command": "DATA_STORE",
+                    "params": {
+                        "task_id": "${task_id}",
+                        "compress": true
+                    }
+                },
+                {
+                    "type": "Action",
+                    "name": "Release_Semaphore",
+                    "description": "Release shared resource",
+                    "command": "SEMAPHORE_RELEASE",
+                    "params": {
+                        "semaphore_id": "${resource_semaphore}"
+                    },
+                    "optional": true
+                },
+                {
+                    "type": "Action",
+                    "name": "Report_Complete",
+                    "description": "Emit observation completion event",
+                    "command": "EMIT_EVENT",
+                    "params": {
+                        "event": "OBSERVATION_COMPLETE",
+                        "task_id": "${task_id}",
+                        "profit": "${profit}"
+                    }
+                }
+            ]
+        },
+        "Observation_With_Downlink": {
+            "type": "Sequence",
+            "name": "Observation_With_Downlink",
+            "description": "Observation followed by immediate data downlink",
+            "children": [
+                {
+                    "type": "SubTree",
+                    "name": "Execute_Observation",
+                    "tree_ref": "Observation_Mission"
+                },
+                {
+                    "type": "Condition",
+                    "name": "Check_Downlink_Available",
+                    "expression": "ground_station_visible == true",
+                    "variables": [
+                        "ground_station_visible"
+                    ]
+                },
+                {
+                    "type": "Action",
+                    "name": "Acquire_Downlink_Semaphore",
+                    "command": "SEMAPHORE_ACQUIRE",
+                    "params": {
+                        "semaphore_id": "sem_ground_station_beijing",
+                        "timeout_s": 60
+                    }
+                },
+                {
+                    "type": "Action",
+                    "name": "Transmit_Data",
+                    "command": "DATA_DOWNLINK",
+                    "params": {
+                        "task_id": "${task_id}",
+                        "ground_station": "${ground_station_id}"
+                    }
+                },
+                {
+                    "type": "Action",
+                    "name": "Release_Downlink_Semaphore",
+                    "command": "SEMAPHORE_RELEASE",
+                    "params": {
+                        "semaphore_id": "sem_ground_station_beijing"
+                    }
+                }
+            ]
+        }
+    },
+    "command_definitions": {
+        "ATTITUDE_ADJUST": {
+            "description": "Adjust satellite attitude to target",
+            "required_params": [
+                "target_lat",
+                "target_lon",
+                "mode"
+            ],
+            "subsystem": "ATTITUDE_CONTROL"
+        },
+        "PAYLOAD_CONFIG": {
+            "description": "Configure payload sensor",
+            "required_params": [
+                "mode"
+            ],
+            "optional_params": [
+                "resolution"
+            ],
+            "subsystem": "PAYLOAD"
+        },
+        "PAYLOAD_CAPTURE": {
+            "description": "Capture imagery",
+            "required_params": [
+                "target_lat",
+                "target_lon"
+            ],
+            "optional_params": [
+                "duration_s"
+            ],
+            "subsystem": "PAYLOAD"
+        },
+        "DATA_STORE": {
+            "description": "Store data to onboard storage",
+            "required_params": [
+                "task_id"
+            ],
+            "subsystem": "DATA_HANDLING"
+        },
+        "DATA_DOWNLINK": {
+            "description": "Downlink data to ground station",
+            "required_params": [
+                "task_id",
+                "ground_station"
+            ],
+            "subsystem": "COMMUNICATION"
+        },
+        "SEMAPHORE_ACQUIRE": {
+            "description": "Acquire a shared resource semaphore",
+            "required_params": [
+                "semaphore_id"
+            ],
+            "optional_params": [
+                "timeout_s"
+            ],
+            "subsystem": "EXECUTOR"
+        },
+        "SEMAPHORE_RELEASE": {
+            "description": "Release a shared resource semaphore",
+            "required_params": [
+                "semaphore_id"
+            ],
+            "subsystem": "EXECUTOR"
+        },
+        "EMIT_EVENT": {
+            "description": "Emit execution event",
+            "required_params": [
+                "event"
+            ],
+            "subsystem": "EXECUTOR"
+        }
+    },
+    "node_types": {
+        "Sequence": {
+            "description": "Execute children in order, fail on first failure"
+        },
+        "Selector": {
+            "description": "Execute children in order, succeed on first success"
+        },
+        "Parallel": {
+            "description": "Execute children concurrently"
+        },
+        "Action": {
+            "description": "Execute a command"
+        },
+        "Condition": {
+            "description": "Evaluate an expression, return SUCCESS/FAILURE"
+        },
+        "Decorator": {
+            "description": "Modify child behavior (Retry, Timeout, Invert, etc.)"
+        },
+        "SubTree": {
+            "description": "Reference another behavior tree"
+        }
+    }
+}
