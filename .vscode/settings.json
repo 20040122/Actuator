@@ -1,6 +1,6 @@
 {
     "code-runner.executorMap": {
-        "cpp": "cd $dir && C:/msys64/ucrt64/bin/g++ -std=c++11 *.cpp -o ../exe/$fileNameWithoutExt && chcp 65001 | Out-Null && ..\\exe\\$fileNameWithoutExt"
+        "cpp": "cd $dir ; $sources = (Get-ChildItem -Recurse -Filter *.cpp -File).FullName ; C:/msys64/ucrt64/bin/g++ -std=c++11 @sources -o ../exe/$fileNameWithoutExt ; if ($?) { chcp 65001 | Out-Null ; ..\\exe\\$fileNameWithoutExt }"
     },
     "code-runner.runInTerminal": true,
     "code-runner.saveFileBeforeRun": true,

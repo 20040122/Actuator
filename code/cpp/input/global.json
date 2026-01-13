@@ -1,7 +1,7 @@
 {
     "msg_type": "GlobalConfig",
     "plan_id": "observation_plan_001",
-    "version": "2.0.0",
+    "version": "1.0.0",
     "multi_node_config": {
         "description": "Multi-node execution configuration",
         "total_nodes": 128,
