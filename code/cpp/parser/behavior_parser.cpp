@@ -33,24 +33,14 @@ static void expandNode(
     if (node.type == NodeType::SEQUENCE || 
         node.type == NodeType::SELECTOR || 
         node.type == NodeType::PARALLEL) {
+        expanded_node.children.clear();
         result.push_back(expanded_node);
-        std::cout << "展开容器节点: " << node.name 
-                  << " (类型: ";
-        if (node.type == NodeType::SEQUENCE) std::cout << "Sequence";
-        else if (node.type == NodeType::SELECTOR) std::cout << "Selector";
-        else if (node.type == NodeType::PARALLEL) std::cout << "Parallel";
-        std::cout << ", 子节点数: " << node.children.size() << ")" << std::endl;
         for (size_t i = 0; i < node.children.size(); ++i) {
             expandNode(node.children[i], params, result);
         }
     } 
     else {
         result.push_back(expanded_node);
-        std::cout << "展开叶子节点: " << node.name 
-                  << " (类型: ";
-        if (node.type == NodeType::ACTION) std::cout << "Action";
-        else if (node.type == NodeType::CONDITION) std::cout << "Condition";
-        std::cout << ", 命令: " << expanded_node.command << ")" << std::endl;
     }
 }
 
@@ -58,15 +48,7 @@ std::vector<BehaviorNode> BehaviorTreeParser::instantiate(
     const BehaviorNode& definition,
     const std::map<std::string, std::string>& params) {
     std::vector<BehaviorNode> nodes;
-    std::cout << "\n开始实例化行为树: " << definition.name << std::endl;
-    std::cout << "参数列表:" << std::endl;
-    for (std::map<std::string, std::string>::const_iterator it = params.begin(); 
-         it != params.end(); ++it) {
-        std::cout << "  " << it->first << " = " << it->second << std::endl;
-    }
-    std::cout << std::endl;
     expandNode(definition, params, nodes);
-    std::cout << "\n实例化完成，共生成 " << nodes.size() << " 个节点\n" << std::endl;
     return nodes;
 }
 

@@ -1,6 +1,7 @@
 #include "json_parser.h"
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include "../third_party/nlohmann/json.hpp"
 
 using json = nlohmann::json;
@@ -92,14 +93,29 @@ std::vector<TaskSegment> ScheduleParser::parseSatelliteTasks(
                         task.execution.planned_end = exec.value("planned_end", "");
                         task.execution.duration_s = exec.value("duration_s", 0);
                     }
+                    
+                    if (task_json.contains("window")) {
+                        auto& win = task_json["window"];
+                        task.window.window_id = win.value("window_id", "");
+                        task.window.window_seq = win.value("window_seq", 0);
+                        task.window.start = win.value("start", "");
+                        task.window.end = win.value("end", "");
+                    }
+                    
                     if (task_json.contains("behavior_params")) {
                         for (auto it = task_json["behavior_params"].begin(); it != task_json["behavior_params"].end(); ++it) {
                             const std::string& key = it.key();
                             const json& value = it.value();
                             if (value.is_string()) {
                                 task.behavior_params[key] = value.get<std::string>();
-                            } else if (value.is_number()) {
-                                task.behavior_params[key] = std::to_string(value.get<double>());
+                            } else if (value.is_number_integer()) {
+                                task.behavior_params[key] = std::to_string(value.get<int>());
+                            } else if (value.is_number_float()) {
+                                std::ostringstream oss;
+                                oss << value.get<double>();
+                                task.behavior_params[key] = oss.str();
+                            } else if (value.is_boolean()) {
+                                task.behavior_params[key] = value.get<bool>() ? "true" : "false";
                             } else {
                                 task.behavior_params[key] = value.dump();
                             }

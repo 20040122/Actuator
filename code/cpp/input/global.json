@@ -2,13 +2,18 @@
     "msg_type": "GlobalConfig",
     "plan_id": "observation_plan_001",
     "version": "1.0.0",
+    "system_defaults": {
+        "description": "Default system state values for satellites",
+        "battery_percent": 85,
+        "storage_available_mb": 500,
+        "payload_status": "READY"
+    },
     "multi_node_config": {
         "description": "Multi-node execution configuration",
         "total_nodes": 128,
         "active_nodes": [
             "S1",
-            "S2",
-            "S128"
+            "S2"
         ],
         "node_communication": {
             "protocol": "INTER_SAT_LINK",

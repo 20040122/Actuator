@@ -1,17 +1,16 @@
 {
     "msg_type": "MultiSatelliteSchedule",
     "plan_id": "observation_plan_001",
-    "generated_at": "01-12T00:00:00+08:00",
+    "generated_at": "2026-01-12T00:00:00",
     "timebase": {
-        "date": "01-12",
-        "timezone": "+08:00"
+        "date": "2026-01-12"
     },
     "summary": {
-        "total_satellites": 128,
+        "total_satellites": 2,
         "total_tasks": 500,
-        "scheduled_tasks": 9,
-        "unscheduled_tasks": 491,
-        "total_profit": 89
+        "scheduled_tasks": 6,
+        "unscheduled_tasks": 494,
+        "total_profit": 61
     },
     "shared_resources": {
         "resources": [
@@ -83,6 +82,12 @@
             },
             "attitude_adjustment_time_s": 42,
             "status": "ACTIVE",
+            "system_state": {
+                "battery_percent": 88,
+                "storage_available_mb": 650,
+                "payload_status": "READY",
+                "thermal_status": "NORMAL"
+            },
             "scheduled_tasks": [
                 {
                     "segment_id": "S1#0001",
@@ -96,12 +101,12 @@
                     "window": {
                         "window_id": "X_11^1",
                         "window_seq": 1,
-                        "start": "01-12T08:00:00+08:00",
-                        "end": "01-12T08:15:00+08:00"
+                        "start": "2026-01-12T08:00:00",
+                        "end": "2026-01-12T08:15:00"
                     },
                     "execution": {
-                        "planned_start": "01-12T08:00:00+08:00",
-                        "planned_end": "01-12T08:00:40+08:00",
+                        "planned_start": "2026-01-12T08:00:00",
+                        "planned_end": "2026-01-12T08:00:40",
                         "duration_s": 40
                     },
                     "behavior_ref": "Observation_Mission",
@@ -127,7 +132,7 @@
                             {
                                 "name": "DEADLINE",
                                 "hard": true,
-                                "deadline": "01-12T15:10:00+08:00"
+                                "deadline": "2026-01-12T15:10:00"
                             }
                         ],
                         "dynamic": [
@@ -150,12 +155,12 @@
                     "window": {
                         "window_id": "X_41^1",
                         "window_seq": 1,
-                        "start": "01-12T09:30:00+08:00",
-                        "end": "01-12T09:45:00+08:00"
+                        "start": "2026-01-12T09:30:00",
+                        "end": "2026-01-12T09:45:00"
                     },
                     "execution": {
-                        "planned_start": "01-12T09:30:00+08:00",
-                        "planned_end": "01-12T09:31:00+08:00",
+                        "planned_start": "2026-01-12T09:30:00",
+                        "planned_end": "2026-01-12T09:31:00",
                         "duration_s": 60
                     },
                     "behavior_ref": "Observation_Mission",
@@ -177,12 +182,12 @@
                     "window": {
                         "window_id": "X_500,1^2",
                         "window_seq": 2,
-                        "start": "01-12T15:28:00+08:00",
-                        "end": "01-12T15:40:00+08:00"
+                        "start": "2026-01-12T15:28:00",
+                        "end": "2026-01-12T15:40:00"
                     },
                     "execution": {
-                        "planned_start": "01-12T15:28:00+08:00",
-                        "planned_end": "01-12T15:28:50+08:00",
+                        "planned_start": "2026-01-12T15:28:00",
+                        "planned_end": "2026-01-12T15:28:50",
                         "duration_s": 50
                     },
                     "behavior_ref": "Observation_Mission",
@@ -210,6 +215,12 @@
             },
             "attitude_adjustment_time_s": 34,
             "status": "ACTIVE",
+            "system_state": {
+                "battery_percent": 92,
+                "storage_available_mb": 720,
+                "payload_status": "READY",
+                "thermal_status": "NORMAL"
+            },
             "scheduled_tasks": [
                 {
                     "segment_id": "S2#0001",
@@ -223,15 +234,20 @@
                     "window": {
                         "window_id": "X_22^1",
                         "window_seq": 1,
-                        "start": "01-12T08:57:00+08:00",
-                        "end": "01-12T09:10:00+08:00"
+                        "start": "2026-01-12T08:57:00",
+                        "end": "2026-01-12T09:10:00"
                     },
                     "execution": {
-                        "planned_start": "01-12T08:57:00+08:00",
-                        "planned_end": "01-12T08:57:35+08:00",
+                        "planned_start": "2026-01-12T08:57:00",
+                        "planned_end": "2026-01-12T08:57:35",
                         "duration_s": 35
                     },
-                    "behavior_ref": "Observation_Mission"
+                    "behavior_ref": "Observation_Mission",
+                    "behavior_params": {
+                        "target_lat": 31.23,
+                        "target_lon": 121.47,
+                        "resolution": "HIGH"
+                    }
                 },
                 {
                     "segment_id": "S2#0002",
@@ -245,15 +261,20 @@
                     "window": {
                         "window_id": "X_52^1",
                         "window_seq": 1,
-                        "start": "01-12T10:47:00+08:00",
-                        "end": "01-12T11:00:00+08:00"
+                        "start": "2026-01-12T10:47:00",
+                        "end": "2026-01-12T11:00:00"
                     },
                     "execution": {
-                        "planned_start": "01-12T10:47:00+08:00",
-                        "planned_end": "01-12T10:47:55+08:00",
+                        "planned_start": "2026-01-12T10:47:00",
+                        "planned_end": "2026-01-12T10:47:55",
                         "duration_s": 55
                     },
-                    "behavior_ref": "Observation_Mission"
+                    "behavior_ref": "Observation_Mission",
+                    "behavior_params": {
+                        "target_lat": 42.00,
+                        "target_lon": 85.00,
+                        "resolution": "MEDIUM"
+                    }
                 },
                 {
                     "segment_id": "S2#0003",
@@ -267,90 +288,23 @@
                     "window": {
                         "window_id": "X_92^2",
                         "window_seq": 2,
-                        "start": "01-12T15:15:00+08:00",
-                        "end": "01-12T15:30:00+08:00"
+                        "start": "2026-01-12T15:15:00",
+                        "end": "2026-01-12T15:30:00"
                     },
                     "execution": {
-                        "planned_start": "01-12T15:15:00+08:00",
-                        "planned_end": "01-12T15:15:40+08:00",
+                        "planned_start": "2026-01-12T15:15:00",
+                        "planned_end": "2026-01-12T15:15:40",
                         "duration_s": 40
                     },
-                    "behavior_ref": "Observation_Mission"
+                    "behavior_ref": "Observation_Mission",
+                    "behavior_params": {
+                        "target_lat": 15.00,
+                        "target_lon": 115.00,
+                        "resolution": "HIGH"
+                    }
                 }
             ],
             "total_profit": 31
-        },
-        {
-            "satellite_id": "S128",
-            "node_id": "node_s128",
-            "name": "Satellite S128",
-            "orbital_params": {
-                "semi_major_axis_km": 7078,
-                "inclination_deg": 55.0,
-                "eccentricity": 0.001,
-                "raan_deg": 30.0,
-                "arg_perigee_deg": 90.0,
-                "mean_anomaly_deg": 120.0
-            },
-            "attitude_adjustment_time_s": 25,
-            "status": "ACTIVE",
-            "scheduled_tasks": [
-                {
-                    "segment_id": "S128#0001",
-                    "task_id": "T3",
-                    "task_name": "Pearl River Delta Economic Zone",
-                    "profit": 8,
-                    "window": {
-                        "window_id": "X_33^1",
-                        "window_seq": 1,
-                        "start": "01-12T09:50:00+08:00",
-                        "end": "01-12T10:05:00+08:00"
-                    },
-                    "execution": {
-                        "planned_start": "01-12T09:50:00+08:00",
-                        "planned_end": "01-12T09:50:45+08:00",
-                        "duration_s": 45
-                    },
-                    "behavior_ref": "Observation_Mission"
-                },
-                {
-                    "segment_id": "S128#0002",
-                    "task_id": "T6",
-                    "task_name": "Qinghai-Tibet Plateau Ecology",
-                    "profit": 11,
-                    "window": {
-                        "window_id": "X_63^1",
-                        "window_seq": 1,
-                        "start": "01-12T12:15:00+08:00",
-                        "end": "01-12T12:30:00+08:00"
-                    },
-                    "execution": {
-                        "planned_start": "01-12T12:15:00+08:00",
-                        "planned_end": "01-12T12:16:10+08:00",
-                        "duration_s": 70
-                    },
-                    "behavior_ref": "Observation_Mission"
-                },
-                {
-                    "segment_id": "S128#0003",
-                    "task_id": "T8",
-                    "task_name": "Western Development Monitoring",
-                    "profit": 9,
-                    "window": {
-                        "window_id": "X_83^1",
-                        "window_seq": 1,
-                        "start": "01-12T15:27:00+08:00",
-                        "end": "01-12T15:40:00+08:00"
-                    },
-                    "execution": {
-                        "planned_start": "01-12T15:27:00+08:00",
-                        "planned_end": "01-12T15:27:52+08:00",
-                        "duration_s": 52
-                    },
-                    "behavior_ref": "Observation_Mission"
-                }
-            ],
-            "total_profit": 28
         }
     ],
     "unscheduled_tasks": [
@@ -372,10 +326,9 @@
             "description": "Daily status synchronization point",
             "participants": [
                 "S1",
-                "S2",
-                "S128"
+                "S2"
             ],
-            "anchor_time": "01-12T12:00:00+08:00",
+            "anchor_time": "2026-01-12T12:00:00",
             "window_s": 60,
             "timeout_s": 300,
             "policy": {

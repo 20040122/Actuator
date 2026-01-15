@@ -1,17 +1,17 @@
 {
     "library_id": "observation_behaviors",
     "version": "1.0.0",
-    "description": "Behavior tree definitions for satellite observation missions",
+    "description": "卫星观测任务的行为树定义",
     "behavior_definitions": {
         "Observation_Mission": {
             "type": "Sequence",
             "name": "Observation_Mission",
-            "description": "Complete observation task: attitude adjust -> capture -> data handling",
+            "description": "完整观测任务：姿态调整 -> 拍摄 -> 数据处理",
             "children": [
                 {
                     "type": "Condition",
                     "name": "Check_Prerequisites",
-                    "description": "Verify satellite is ready for observation",
+                    "description": "验证卫星是否已准备好进行观测",
                     "expression": "battery > 20 && storage_available > 100 && payload_status == 'READY'",
                     "variables": [
                         "battery",
@@ -22,7 +22,7 @@
                 {
                     "type": "Condition",
                     "name": "Check_Time_Window",
-                    "description": "Verify current time is within observation window",
+                    "description": "验证当前时间是否在观测窗口内",
                     "expression": "current_time >= window_start && current_time <= window_end",
                     "variables": [
                         "current_time",
@@ -33,7 +33,7 @@
                 {
                     "type": "Action",
                     "name": "Acquire_Semaphore",
-                    "description": "Acquire shared resource if needed",
+                    "description": "如需要则获取共享资源",
                     "command": "SEMAPHORE_ACQUIRE",
                     "params": {
                         "semaphore_id": "${resource_semaphore}",
@@ -44,7 +44,7 @@
                 {
                     "type": "Action",
                     "name": "Attitude_Adjustment",
-                    "description": "Adjust satellite attitude to point at target",
+                    "description": "调整卫星姿态以指向目标",
                     "command": "ATTITUDE_ADJUST",
                     "params": {
                         "target_lat": "${target_lat}",
@@ -53,19 +53,11 @@
                     },
                     "timeout_s": "${attitude_adjustment_time_s}"
                 },
-                {
-                    "type": "Condition",
-                    "name": "Verify_Attitude",
-                    "description": "Confirm attitude adjustment completed",
-                    "expression": "attitude_error < 0.1",
-                    "variables": [
-                        "attitude_error"
-                    ]
-                },
+
                 {
                     "type": "Action",
                     "name": "Configure_Payload",
-                    "description": "Configure camera/sensor for observation",
+                    "description": "配置相机/传感器以进行观测",
                     "command": "PAYLOAD_CONFIG",
                     "params": {
                         "mode": "OBSERVATION",
@@ -75,7 +67,7 @@
                 {
                     "type": "Action",
                     "name": "Execute_Observation",
-                    "description": "Capture imagery of target",
+                    "description": "拍摄目标图像",
                     "command": "PAYLOAD_CAPTURE",
                     "params": {
                         "target_lat": "${target_lat}",
@@ -86,7 +78,7 @@
                 {
                     "type": "Action",
                     "name": "Store_Data",
-                    "description": "Store captured data to onboard storage",
+                    "description": "将拍摄的数据存储到星载存储器",
                     "command": "DATA_STORE",
                     "params": {
                         "task_id": "${task_id}",
@@ -96,7 +88,7 @@
                 {
                     "type": "Action",
                     "name": "Release_Semaphore",
-                    "description": "Release shared resource",
+                    "description": "释放共享资源",
                     "command": "SEMAPHORE_RELEASE",
                     "params": {
                         "semaphore_id": "${resource_semaphore}"
@@ -106,7 +98,7 @@
                 {
                     "type": "Action",
                     "name": "Report_Complete",
-                    "description": "Emit observation completion event",
+                    "description": "发送观测完成事件",
                     "command": "EMIT_EVENT",
                     "params": {
                         "event": "OBSERVATION_COMPLETE",
@@ -115,57 +107,11 @@
                     }
                 }
             ]
-        },
-        "Observation_With_Downlink": {
-            "type": "Sequence",
-            "name": "Observation_With_Downlink",
-            "description": "Observation followed by immediate data downlink",
-            "children": [
-                {
-                    "type": "SubTree",
-                    "name": "Execute_Observation",
-                    "tree_ref": "Observation_Mission"
-                },
-                {
-                    "type": "Condition",
-                    "name": "Check_Downlink_Available",
-                    "expression": "ground_station_visible == true",
-                    "variables": [
-                        "ground_station_visible"
-                    ]
-                },
-                {
-                    "type": "Action",
-                    "name": "Acquire_Downlink_Semaphore",
-                    "command": "SEMAPHORE_ACQUIRE",
-                    "params": {
-                        "semaphore_id": "sem_ground_station_beijing",
-                        "timeout_s": 60
-                    }
-                },
-                {
-                    "type": "Action",
-                    "name": "Transmit_Data",
-                    "command": "DATA_DOWNLINK",
-                    "params": {
-                        "task_id": "${task_id}",
-                        "ground_station": "${ground_station_id}"
-                    }
-                },
-                {
-                    "type": "Action",
-                    "name": "Release_Downlink_Semaphore",
-                    "command": "SEMAPHORE_RELEASE",
-                    "params": {
-                        "semaphore_id": "sem_ground_station_beijing"
-                    }
-                }
-            ]
         }
     },
     "command_definitions": {
         "ATTITUDE_ADJUST": {
-            "description": "Adjust satellite attitude to target",
+            "description": "调整卫星姿态指向目标",
             "required_params": [
                 "target_lat",
                 "target_lon",
@@ -174,7 +120,7 @@
             "subsystem": "ATTITUDE_CONTROL"
         },
         "PAYLOAD_CONFIG": {
-            "description": "Configure payload sensor",
+            "description": "配置有效载荷传感器",
             "required_params": [
                 "mode"
             ],
@@ -184,7 +130,7 @@
             "subsystem": "PAYLOAD"
         },
         "PAYLOAD_CAPTURE": {
-            "description": "Capture imagery",
+            "description": "拍摄图像",
             "required_params": [
                 "target_lat",
                 "target_lon"
@@ -195,22 +141,14 @@
             "subsystem": "PAYLOAD"
         },
         "DATA_STORE": {
-            "description": "Store data to onboard storage",
+            "description": "将数据存储到星载存储器",
             "required_params": [
                 "task_id"
             ],
             "subsystem": "DATA_HANDLING"
         },
-        "DATA_DOWNLINK": {
-            "description": "Downlink data to ground station",
-            "required_params": [
-                "task_id",
-                "ground_station"
-            ],
-            "subsystem": "COMMUNICATION"
-        },
         "SEMAPHORE_ACQUIRE": {
-            "description": "Acquire a shared resource semaphore",
+            "description": "获取共享资源信号量",
             "required_params": [
                 "semaphore_id"
             ],
@@ -220,14 +158,14 @@
             "subsystem": "EXECUTOR"
         },
         "SEMAPHORE_RELEASE": {
-            "description": "Release a shared resource semaphore",
+            "description": "释放共享资源信号量",
             "required_params": [
                 "semaphore_id"
             ],
             "subsystem": "EXECUTOR"
         },
         "EMIT_EVENT": {
-            "description": "Emit execution event",
+            "description": "发送执行事件",
             "required_params": [
                 "event"
             ],
@@ -236,25 +174,25 @@
     },
     "node_types": {
         "Sequence": {
-            "description": "Execute children in order, fail on first failure"
+            "description": "按顺序执行子节点，遇到第一个失败即失败"
         },
         "Selector": {
-            "description": "Execute children in order, succeed on first success"
+            "description": "按顺序执行子节点，遇到第一个成功即成功"
         },
         "Parallel": {
-            "description": "Execute children concurrently"
+            "description": "并发执行子节点"
         },
         "Action": {
-            "description": "Execute a command"
+            "description": "执行一条命令"
         },
         "Condition": {
-            "description": "Evaluate an expression, return SUCCESS/FAILURE"
+            "description": "评估表达式，返回成功/失败"
         },
         "Decorator": {
-            "description": "Modify child behavior (Retry, Timeout, Invert, etc.)"
+            "description": "修改子节点行为（重试、超时、反转等）"
         },
         "SubTree": {
-            "description": "Reference another behavior tree"
+            "description": "引用另一个行为树"
         }
     }
 }

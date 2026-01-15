@@ -48,6 +48,12 @@ struct TaskSegment {
         std::string planned_end;
         int duration_s;
     } execution;
+    struct {
+        std::string window_id;
+        int window_seq;
+        std::string start; 
+        std::string end;   
+    } window;
 };
 
 
