@@ -15,6 +15,9 @@ public:
     }   
     void executeTask(const TaskSegment& task, 
                      const BehaviorNode& behavior_def) {
+        // 重置所有节点状态，确保新任务从干净状态开始
+        state_mgr_.reset();
+        
         initializeTaskContext(task);
         std::string snapshot_id = var_mgr_.createSnapshot("task_start_" + task.segment_id);
         try {
@@ -97,7 +100,14 @@ private:
             var_mgr_.set("window_id", VariableValue(task.window.window_id), Scope::GLOBAL);
         }
         
+        // 先设置 behavior_params
         var_mgr_.setFromParams(task.behavior_params, Scope::LOCAL);
+        
+        // 如果 behavior_params 中没有提供 observation_duration_s，使用 execution.duration_s 作为默认值
+        if (!var_mgr_.exists("observation_duration_s", Scope::LOCAL) && task.execution.duration_s > 0) {
+            var_mgr_.set("observation_duration_s", VariableValue(task.execution.duration_s), Scope::LOCAL);
+        }
+        
         std::cout << "任务上下文初始化完成，参数数量: " << task.behavior_params.size() << std::endl;
     }
     bool executeNode(const BehaviorNode& node) {

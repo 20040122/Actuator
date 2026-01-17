@@ -22,3 +22,7 @@ void CommandStateManager::logTransition(const std::string& node_id,
               << state_names[static_cast<int>(from)] << " -> " 
               << state_names[static_cast<int>(to)] << std::endl;
 }
+
+void CommandStateManager::reset() {
+    states_.clear();
+}

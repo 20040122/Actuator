@@ -111,9 +111,13 @@
                     },
                     "behavior_ref": "Observation_Mission",
                     "behavior_params": {
+                        "task_id": "T1",
+                        "profit": 8,
                         "target_lat": 39.90,
                         "target_lon": 116.41,
-                        "resolution": "HIGH"
+                        "resolution": "HIGH",
+                        "observation_duration_s": 40,
+                        "resource_semaphore": "sem_ground_station_beijing"
                     },
                     "resource_requirements": [
                         {
@@ -165,9 +169,13 @@
                     },
                     "behavior_ref": "Observation_Mission",
                     "behavior_params": {
+                        "task_id": "T4",
+                        "profit": 7,
                         "target_lat": 45.00,
                         "target_lon": 125.00,
-                        "resolution": "MEDIUM"
+                        "resolution": "MEDIUM",
+                        "observation_duration_s": 60,
+                        "resource_semaphore": "sem_ground_station_xian"
                     }
                 },
                 {
@@ -192,10 +200,14 @@
                     },
                     "behavior_ref": "Observation_Mission",
                     "behavior_params": {
+                        "task_id": "T500",
+                        "profit": 15,
                         "target_lat": 25.00,
                         "target_lon": 125.00,
                         "resolution": "HIGH",
-                        "priority": "URGENT"
+                        "priority": "URGENT",
+                        "observation_duration_s": 50,
+                        "resource_semaphore": "sem_relay_link"
                     }
                 }
             ],
@@ -244,9 +256,13 @@
                     },
                     "behavior_ref": "Observation_Mission",
                     "behavior_params": {
+                        "task_id": "T2",
+                        "profit": 9,
                         "target_lat": 31.23,
                         "target_lon": 121.47,
-                        "resolution": "HIGH"
+                        "resolution": "HIGH",
+                        "observation_duration_s": 35,
+                        "resource_semaphore": "sem_ground_station_beijing"
                     }
                 },
                 {
@@ -271,9 +287,13 @@
                     },
                     "behavior_ref": "Observation_Mission",
                     "behavior_params": {
+                        "task_id": "T5",
+                        "profit": 10,
                         "target_lat": 42.00,
                         "target_lon": 85.00,
-                        "resolution": "MEDIUM"
+                        "resolution": "MEDIUM",
+                        "observation_duration_s": 55,
+                        "resource_semaphore": "sem_ground_station_xian"
                     }
                 },
                 {
@@ -298,9 +318,13 @@
                     },
                     "behavior_ref": "Observation_Mission",
                     "behavior_params": {
+                        "task_id": "T9",
+                        "profit": 12,
                         "target_lat": 15.00,
                         "target_lon": 115.00,
-                        "resolution": "HIGH"
+                        "resolution": "HIGH",
+                        "observation_duration_s": 40,
+                        "resource_semaphore": "sem_relay_link"
                     }
                 }
             ],
