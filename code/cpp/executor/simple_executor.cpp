@@ -15,9 +15,7 @@ public:
     }   
     void executeTask(const TaskSegment& task, 
                      const BehaviorNode& behavior_def) {
-        // 重置所有节点状态，确保新任务从干净状态开始
         state_mgr_.reset();
-        
         initializeTaskContext(task);
         std::string snapshot_id = var_mgr_.createSnapshot("task_start_" + task.segment_id);
         try {
@@ -82,14 +80,10 @@ private:
         var_mgr_.set("satellite_id", VariableValue(task.satellite_id), Scope::GLOBAL);
         var_mgr_.set("task_id", VariableValue(task.task_id), Scope::GLOBAL);
         var_mgr_.set("segment_id", VariableValue(task.segment_id), Scope::GLOBAL);
-        
-        // 设置当前时间为任务的计划开始时间（模拟在正确的时间窗口内执行）
         if (!task.execution.planned_start.empty()) {
             var_mgr_.set("current_time", VariableValue(task.execution.planned_start), Scope::GLOBAL);
             std::cout << "设置模拟时间: current_time = " << task.execution.planned_start << std::endl;
         }
-        
-        // 设置时间窗口变量（Check_Time_Window节点需要）
         if (!task.window.start.empty()) {
             var_mgr_.set("window_start", VariableValue(task.window.start), Scope::GLOBAL);
         }
@@ -99,15 +93,10 @@ private:
         if (!task.window.window_id.empty()) {
             var_mgr_.set("window_id", VariableValue(task.window.window_id), Scope::GLOBAL);
         }
-        
-        // 先设置 behavior_params
         var_mgr_.setFromParams(task.behavior_params, Scope::LOCAL);
-        
-        // 如果 behavior_params 中没有提供 observation_duration_s，使用 execution.duration_s 作为默认值
         if (!var_mgr_.exists("observation_duration_s", Scope::LOCAL) && task.execution.duration_s > 0) {
             var_mgr_.set("observation_duration_s", VariableValue(task.execution.duration_s), Scope::LOCAL);
         }
-        
         std::cout << "任务上下文初始化完成，参数数量: " << task.behavior_params.size() << std::endl;
     }
     bool executeNode(const BehaviorNode& node) {
@@ -178,11 +167,9 @@ private:
             std::cout << "警告: 条件节点缺少表达式" << std::endl;
             return false;
         }
-        
         std::cout << "评估条件: " << node.expression << std::endl;
         bool result = evaluator_.evaluate(node.expression);
         std::cout << "条件结果: " << (result ? "真" : "假") << std::endl;
-        
         return result;
     }
     bool executeSequence(const BehaviorNode& node) {
@@ -205,7 +192,6 @@ private:
         std::cout << "选择节点失败: 所有分支均失败" << std::endl;
         return false;
     }
-
     bool executeParallel(const BehaviorNode& node) {
         std::cout << "并行执行 " << node.children.size() << " 个子节点" << std::endl;
         bool all_success = true;
@@ -214,7 +200,6 @@ private:
                 all_success = false;
             }
         }
-        
         return all_success;
     }
     bool executeGeneric(const BehaviorNode& node) {

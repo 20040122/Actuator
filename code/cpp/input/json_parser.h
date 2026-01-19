@@ -12,7 +12,6 @@ public:
         const std::string& satellite_id
     );
 };
-
 class BehaviorLibraryParser {
 public:
     BehaviorNode parseBehaviorDefinition(

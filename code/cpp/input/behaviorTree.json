@@ -1,7 +1,7 @@
 {
     "library_id": "observation_behaviors",
     "version": "1.0.0",
-    "description": "卫星观测任务的行为树定义",
+    "description": "观测任务行为树",
     "behavior_definitions": {
         "Observation_Mission": {
             "type": "Sequence",

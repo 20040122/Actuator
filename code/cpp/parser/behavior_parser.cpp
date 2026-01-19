@@ -20,7 +20,6 @@ static std::string replaceVariables(const std::string& text, const std::map<std:
     }
     return result;
 }
-
 static void expandNode(
     const BehaviorNode& node,
     const std::map<std::string, std::string>& params,
@@ -43,7 +42,6 @@ static void expandNode(
         result.push_back(expanded_node);
     }
 }
-
 std::vector<BehaviorNode> BehaviorTreeParser::instantiate(
     const BehaviorNode& definition,
     const std::map<std::string, std::string>& params) {
@@ -51,7 +49,6 @@ std::vector<BehaviorNode> BehaviorTreeParser::instantiate(
     expandNode(definition, params, nodes);
     return nodes;
 }
-
 void BehaviorTreeParser::substituteVariables(
     BehaviorNode& node,
     const std::map<std::string, std::string>& params) {

@@ -80,7 +80,6 @@ private:
     mutable std::vector<std::string> evaluation_log_;
     std::function<bool(const ResourceConstraint&)> resource_checker_;
     std::function<bool(const SemaphoreConstraint&)> semaphore_checker_;
-
     bool parseAndEvaluate(const std::string& expr);
     enum class TokenType { 
         NUMBER,
@@ -94,13 +93,11 @@ private:
         NOT,
         END
     };
-
     struct Token {
         TokenType type;
         std::string value;
         Token(TokenType t, const std::string& v = "") : type(t), value(v) {}
     };
-
     std::vector<Token> tokenize(const std::string& expr);
     bool parseExpression(const std::vector<Token>& tokens, size_t& pos);
     bool parseOrExpression(const std::vector<Token>& tokens, size_t& pos);

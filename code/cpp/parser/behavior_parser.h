@@ -9,7 +9,6 @@ public:
         const BehaviorNode& definition,
         const std::map<std::string, std::string>& params
     );
-    
 private:
     void substituteVariables(
         BehaviorNode& node,

@@ -6,7 +6,6 @@ void CommandStateManager::updateState(const std::string& node_id, NodeState stat
     states_[node_id] = state;
     logTransition(node_id, old_state, state);
 }
-
 NodeState CommandStateManager::getState(const std::string& node_id) {
     auto it = states_.find(node_id);
     if (it != states_.end()) {
@@ -14,7 +13,6 @@ NodeState CommandStateManager::getState(const std::string& node_id) {
     }
     return NodeState::NOT_STARTED;
 }
-
 void CommandStateManager::logTransition(const std::string& node_id, 
                                         NodeState from, NodeState to) {
     const char* state_names[] = {"NOT_STARTED", "READY", "RUNNING", "SUCCESS", "FAILED", "BLOCKED"};
@@ -22,7 +20,6 @@ void CommandStateManager::logTransition(const std::string& node_id,
               << state_names[static_cast<int>(from)] << " -> " 
               << state_names[static_cast<int>(to)] << std::endl;
 }
-
 void CommandStateManager::reset() {
     states_.clear();
 }

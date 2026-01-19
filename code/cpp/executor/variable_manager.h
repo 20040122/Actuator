@@ -16,33 +16,26 @@ enum class Scope {
     LOCAL,       
     INTERMEDIATE 
 };
-
 class VariableValue {
 public:
     enum class Type { INT, DOUBLE, STRING, BOOL, UNKNOWN };
-    
     VariableValue() : type_(Type::UNKNOWN), int_val_(0), double_val_(0.0), bool_val_(false) {}
-    
     explicit VariableValue(int val) : type_(Type::INT), int_val_(val), double_val_(0.0), bool_val_(false) {}
     explicit VariableValue(double val) : type_(Type::DOUBLE), int_val_(0), double_val_(val), bool_val_(false) {}
     explicit VariableValue(const std::string& val) : type_(Type::STRING), string_val_(val), int_val_(0), double_val_(0.0), bool_val_(false) {}
     explicit VariableValue(bool val) : type_(Type::BOOL), int_val_(0), double_val_(0.0), bool_val_(val) {}
-    
     Type getType() const { return type_; }
-    
     int asInt() const {
         if (type_ == Type::INT) return int_val_;
         if (type_ == Type::DOUBLE) return static_cast<int>(double_val_);
         if (type_ == Type::BOOL) return bool_val_ ? 1 : 0;
         throw std::runtime_error("Cannot convert to int");
     }
-    
     double asDouble() const {
         if (type_ == Type::DOUBLE) return double_val_;
         if (type_ == Type::INT) return static_cast<double>(int_val_);
         throw std::runtime_error("Cannot convert to double");
     }
-    
     std::string asString() const {
         if (type_ == Type::STRING) return string_val_;
         if (type_ == Type::INT) return std::to_string(int_val_);
@@ -50,14 +43,12 @@ public:
         if (type_ == Type::BOOL) return bool_val_ ? "true" : "false";
         return "";
     }
-    
     bool asBool() const {
         if (type_ == Type::BOOL) return bool_val_;
         if (type_ == Type::INT) return int_val_ != 0;
         if (type_ == Type::STRING) return !string_val_.empty();
         throw std::runtime_error("Cannot convert to bool");
     }
-    
 private:
     Type type_;
     int int_val_;
@@ -65,7 +56,6 @@ private:
     std::string string_val_;
     bool bool_val_;
 };
-
 struct VariableSnapshot {
     std::string snapshot_id;
     std::time_t timestamp;
@@ -74,7 +64,6 @@ struct VariableSnapshot {
     std::map<std::string, VariableValue> intermediate_vars;
     std::string description;
 };
-
 class VariableManager {
 public:
     VariableManager() : snapshot_counter_(0) {}
@@ -100,8 +89,7 @@ public:
     std::vector<std::string> getAccessLog() const { return access_log_; }
     void clearAccessLog() { access_log_.clear(); }
     std::string exportToString() const;
-    void importFromString(const std::string& data);
-    
+    void importFromString(const std::string& data); 
 private:
     std::map<std::string, VariableValue> global_vars_;
     std::map<std::string, VariableValue> local_vars_;
