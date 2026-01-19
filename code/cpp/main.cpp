@@ -18,6 +18,8 @@ int main() {
     executor.getVariableManager().loadFromGlobalConfig("input/global.json");
     std::cout << "加载调度配置..." << std::endl;
     executor.getVariableManager().loadFromScheduleConfig("input/schedule.json", "S1");
+    std::cout << "加载信号量配置..." << std::endl;
+    executor.getSemaphoreManager().loadFromConfig("input/global.json");
     std::cout << "配置加载完成\n" << std::endl;
     
     for (size_t i = 0; i < tasks.size(); ++i) {

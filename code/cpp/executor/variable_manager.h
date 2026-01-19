@@ -29,6 +29,13 @@ public:
         if (type_ == Type::INT) return int_val_;
         if (type_ == Type::DOUBLE) return static_cast<int>(double_val_);
         if (type_ == Type::BOOL) return bool_val_ ? 1 : 0;
+        if (type_ == Type::STRING) {
+            try {
+                return std::stoi(string_val_);
+            } catch (...) {
+                throw std::runtime_error("Cannot convert string '" + string_val_ + "' to int");
+            }
+        }
         throw std::runtime_error("Cannot convert to int");
     }
     double asDouble() const {

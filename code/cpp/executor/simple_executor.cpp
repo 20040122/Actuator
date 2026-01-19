@@ -5,12 +5,14 @@
 #include "../constraint/evaluator.h"
 #include "state_manager.h"
 #include "variable_manager.h"
+#include "semaphore_manager.h"
 
 class SimpleExecutor {
 public:
     SimpleExecutor() 
         : var_mgr_(), 
-          evaluator_(var_mgr_), 
+          evaluator_(var_mgr_),
+          sem_mgr_(),
           debug_mode_(false) {
     }   
     void executeTask(const TaskSegment& task, 
@@ -47,6 +49,7 @@ public:
     
     VariableManager& getVariableManager() { return var_mgr_; }
     ConstraintEvaluator& getConstraintEvaluator() { return evaluator_; }
+    SemaphoreManager& getSemaphoreManager() { return sem_mgr_; }
     void printVariableStatus() const {
         std::cout << "\n========== 变量状态 ==========" << std::endl; 
         auto global_vars = var_mgr_.getAllVariables(Scope::GLOBAL);
@@ -73,7 +76,8 @@ public:
 private:
     VariableManager var_mgr_;         
     ConstraintEvaluator evaluator_;    
-    CommandStateManager state_mgr_;    
+    CommandStateManager state_mgr_;
+    SemaphoreManager sem_mgr_;
     bool debug_mode_;                   
     
     void initializeTaskContext(const TaskSegment& task) {
@@ -211,6 +215,19 @@ private:
             return true;
         }
         std::cout << "  → 执行: " << command << std::endl;
+        if (command == "SEMAPHORE_ACQUIRE") {
+            std::string sem_id = var_mgr_.get("semaphore_id").asString();
+            int timeout = 30;
+            if (var_mgr_.exists("timeout_s")) {
+                timeout = var_mgr_.get("timeout_s").asInt();
+            }
+            return sem_mgr_.acquire(sem_id, timeout);
+        }
+        if (command == "SEMAPHORE_RELEASE") {
+            std::string sem_id = var_mgr_.get("semaphore_id").asString();
+            sem_mgr_.release(sem_id);
+            return true;
+        }
         if (command.find("setvar") != std::string::npos) {
             size_t eq_pos = command.find('=');
             if (eq_pos != std::string::npos) {
