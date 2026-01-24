@@ -64,52 +64,6 @@
             }
         ]
     },
-    "site_selection": {
-        "description": "Site selection strategy for task allocation to satellites",
-        "enabled": true,
-        "mode": "DYNAMIC",
-        "strategies": [
-            {
-                "strategy_id": "earliest_access",
-                "name": "Earliest Access Priority",
-                "description": "Select the satellite with earliest target access",
-                "weight": 0.30,
-                "applicable_to": [
-                    "URGENT",
-                    "TIME_CRITICAL"
-                ]
-            },
-            {
-                "strategy_id": "min_maneuver",
-                "name": "Minimum Maneuver Cost",
-                "description": "Select the satellite with shortest attitude adjustment time",
-                "weight": 0.25,
-                "applicable_to": [
-                    "NORMAL",
-                    "LOW_PRIORITY"
-                ]
-            },
-            {
-                "strategy_id": "max_resource",
-                "name": "Maximum Available Resource",
-                "description": "Select the satellite with most available resources (battery, storage, etc.)",
-                "weight": 0.25,
-                "factors": [
-                    "battery_level",
-                    "storage_available",
-                    "thermal_margin"
-                ]
-            },
-            {
-                "strategy_id": "load_balance",
-                "name": "Load Balancing",
-                "description": "Distribute tasks evenly across satellites",
-                "weight": 0.20,
-                "target_variance": 0.1
-            }
-        ],
-        "fallback": "earliest_access"
-    },
     "sync_points": {
         "description": "Multi-satellite synchronization point configuration",
         "barriers": [
@@ -118,8 +72,7 @@
                 "type": "TIME_BARRIER",
                 "participants": [
                     "S1",
-                    "S2",
-                    "S128"
+                    "S2"
                 ],
                 "anchor_time": "01-12T08:00:00+08:00",
                 "window_s": 30,
