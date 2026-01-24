@@ -79,7 +79,6 @@ private:
     CommandStateManager state_mgr_;
     SemaphoreManager sem_mgr_;
     bool debug_mode_;                   
-    
     void initializeTaskContext(const TaskSegment& task) {
         var_mgr_.set("satellite_id", VariableValue(task.satellite_id), Scope::GLOBAL);
         var_mgr_.set("task_id", VariableValue(task.task_id), Scope::GLOBAL);
@@ -109,19 +108,15 @@ private:
         std::cout << "类型: " << getNodeTypeName(node.type) << std::endl;
         if (!node.expression.empty()) {
             std::cout << "评估前置条件: " << node.expression << std::endl;
-            
-            ConstraintResult result = evaluator_.evaluateDetailed(node.expression);
-            
+            ConstraintResult result = evaluator_.evaluateDetailed(node.expression); 
             if (!result.satisfied) {
                 std::cout << "  [失败] " << result.message << std::endl;
                 state_mgr_.updateState(node.name, NodeState::BLOCKED);
                 return false;
             }
-            
             std::cout << "  [通过] " << result.message << std::endl;
         }
         state_mgr_.updateState(node.name, NodeState::RUNNING);
-
         bool success = false;
         switch (node.type) {
             case NodeType::ACTION:

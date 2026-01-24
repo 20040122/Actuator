@@ -21,7 +21,6 @@ int main() {
     std::cout << "加载信号量配置..." << std::endl;
     executor.getSemaphoreManager().loadFromConfig("input/global.json");
     std::cout << "配置加载完成\n" << std::endl;
-    
     for (size_t i = 0; i < tasks.size(); ++i) {
         std::cout << "\n========================================" << std::endl;
         std::cout << "执行 " << (i + 1) << "/" << tasks.size() << std::endl;

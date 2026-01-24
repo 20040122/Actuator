@@ -40,25 +40,7 @@ coordinator/
 - 死锁检测与解决（已有配置：deadlock_detection）
 - 优先级队列支持（queue_policy: PRIORITY）
 
-## 阶段四：选址模块 (任务分配决策)
-```shell
-coordinator/
-  ├── site_selector.h           # 选址策略接口
-  ├── site_selector.cpp
-  └── strategies/
-        ├── earliest_access.h    # 最早访问策略
-        ├── min_maneuver.h      # 最小机动策略
-        ├── max_resource.h      # 最大资源策略
-        └── load_balance.h      # 负载均衡策略
-```
-### 开发内容：
-
-- 基于 global.json 中的 site_selection.strategies 实现
-- 加权多策略组合评估
-- 动态选址（mode: DYNAMIC）支持
-- 故障降级（fallback 策略）
-
-## 阶段五：多星并行执行
+## 阶段四：多星并行执行
 ```shell
 executor/
   ├── node_executor.h           # 单星节点执行器封装
