@@ -6,6 +6,19 @@
 #include <cstdint>
 #include "../core/types.h"
 
+struct SatelliteInfo {
+    std::string satellite_id;      
+    std::string node_id;           
+    std::string name;              
+    std::string status;            
+    int battery_percent;          
+    int storage_available_mb;      
+    std::string payload_status;    
+    std::string thermal_status;    
+    
+    SatelliteInfo() : battery_percent(0), storage_available_mb(0) {}
+};
+
 class ScheduleParser {
 public:
     std::vector<TaskSegment> parseSatelliteTasks(
@@ -18,8 +31,10 @@ public:
         std::string schedule_id;
         std::map<std::string, std::vector<TaskSegment>> satellite_tasks;  
         std::vector<std::string> satellite_ids;
+        std::vector<SatelliteInfo> satellites;  
     };
     MultiSatSchedule parseAllSatellites(const std::string& schedule_file);
+    std::vector<SatelliteInfo> parseSatelliteNodes(const std::string& schedule_file);
 };
 class BehaviorLibraryParser {
 public:

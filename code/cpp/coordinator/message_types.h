@@ -20,6 +20,8 @@ enum class MessageType : uint16_t {
     
     TASK_ASSIGN         = 0x0101,   
     TASK_ASSIGN_ACK     = 0x0102,   
+    BATCH_TASK_ASSIGN   = 0x0108,   
+    BATCH_TASK_ASSIGN_ACK = 0x0109, 
     TASK_START          = 0x0103,   
     TASK_PROGRESS       = 0x0104,   
     TASK_COMPLETE       = 0x0105,   
@@ -132,8 +134,8 @@ struct TaskTarget {
 struct TaskWindow {
     std::string     window_id;          
     int             window_seq;         
-    std::string     start_time;         
-    std::string     end_time;           
+    std::string     start;              
+    std::string     end;                
 };
 
 struct TaskExecution {
@@ -150,6 +152,22 @@ struct ResourceRequirement {
     int             hold_duration_s;    
 };
 
+struct TaskStaticConstraint {
+    std::string     name;               
+    bool            hard;               
+    std::string     deadline;           
+};
+
+struct TaskDynamicConstraint {
+    std::string     name;               
+    bool            hard;               
+};
+
+struct TaskConstraints {
+    std::vector<TaskStaticConstraint> static_constraints;
+    std::vector<TaskDynamicConstraint> dynamic_constraints;
+};
+
 struct TaskAssignMessage {
     std::string     segment_id;         
     std::string     task_id;            
@@ -162,6 +180,7 @@ struct TaskAssignMessage {
     std::string     behavior_ref;       
     std::map<std::string, std::string> behavior_params;  
     std::vector<ResourceRequirement> resource_requirements; 
+    TaskConstraints constraints;        
 };
 
 struct TaskAssignAck {
@@ -170,6 +189,28 @@ struct TaskAssignAck {
     bool            accepted;           
     std::string     reject_reason;      
     std::string     estimated_start;    
+};
+
+struct BatchTaskAssignMessage {
+    std::string     message_id;         
+    std::string     satellite_id;       
+    std::string     node_id;            
+    std::string     plan_id;            
+    uint64_t        timestamp;          
+    std::vector<TaskAssignMessage> scheduled_tasks;  
+    bool            require_ack;        
+    uint64_t        ack_timeout_ms;     
+};
+
+struct BatchTaskAssignAck {
+    std::string     message_id;         
+    std::string     satellite_id;       
+    std::string     node_id;            
+    uint64_t        timestamp;          
+    bool            accepted;           
+    std::vector<std::string> accepted_task_ids;  
+    std::vector<std::string> rejected_task_ids;  
+    std::map<std::string, std::string> rejection_reasons; 
 };
 
 enum class TaskStatus : uint8_t {
@@ -354,6 +395,8 @@ inline const char* messageTypeToString(MessageType type) {
         case MessageType::NODE_STATUS_UPDATE:   return "NODE_STATUS_UPDATE";
         case MessageType::TASK_ASSIGN:          return "TASK_ASSIGN";
         case MessageType::TASK_ASSIGN_ACK:      return "TASK_ASSIGN_ACK";
+        case MessageType::BATCH_TASK_ASSIGN:    return "BATCH_TASK_ASSIGN";
+        case MessageType::BATCH_TASK_ASSIGN_ACK:return "BATCH_TASK_ASSIGN_ACK";
         case MessageType::TASK_START:           return "TASK_START";
         case MessageType::TASK_PROGRESS:        return "TASK_PROGRESS";
         case MessageType::TASK_COMPLETE:        return "TASK_COMPLETE";

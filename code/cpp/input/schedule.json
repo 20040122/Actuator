@@ -47,26 +47,6 @@
             }
         ]
     },
-    "site_selection_policy": {
-        "criteria": [
-            {
-                "name": "earliest_window",
-                "weight": 0.3
-            },
-            {
-                "name": "min_attitude_adjustment",
-                "weight": 0.25
-            },
-            {
-                "name": "max_available_resource",
-                "weight": 0.25
-            },
-            {
-                "name": "load_balancing",
-                "weight": 0.2
-            }
-        ]
-    },
     "satellites": [
         {
             "satellite_id": "S1",

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>
 #include "../third_party/nlohmann/json.hpp"
+#include "../core/logger.h"
 
 using json = nlohmann::json;
 static NodeType stringToNodeType(const std::string& type_str) {
@@ -131,19 +132,23 @@ BehaviorNode BehaviorLibraryParser::parseBehaviorDefinition(
         json library_json;
         file >> library_json;
         file.close();
-        std::cout << "解析行为库文件: " << library_file << std::endl;    
+        LOG("解析行为库文件: " + library_file);    
         if (!library_json.contains("behavior_definitions")) {
-            std::cerr << "行为库文件缺少behavior_definitions字段" << std::endl;
+            LOG_ERROR("行为库文件缺少behavior_definitions字段");
             return root_node;
         }
         auto& behaviors = library_json["behavior_definitions"];
         if (!behaviors.contains(behavior_name)) {
-            std::cerr << "未找到行为定义: " << behavior_name << std::endl;
+            LOG_ERROR("未找到行为定义: " + behavior_name);
             return root_node;
         }
         root_node = parseNodeFromJson(behaviors[behavior_name]);
-        std::cout << "成功加载行为定义: " << behavior_name 
-                  << " (类型: " << behaviors[behavior_name].value("type", "Unknown") << ")" << std::endl;    
+        {
+            std::ostringstream oss;
+            oss << "成功加载行为定义: " << behavior_name 
+                << " (类型: " << behaviors[behavior_name].value("type", "Unknown") << ")";
+            LOG(oss.str());
+        }    
     } catch (const json::exception& e) {
         std::cerr << "JSON解析错误: " << e.what() << std::endl;
     } catch (const std::exception& e) {
@@ -231,6 +236,25 @@ ScheduleParser::MultiSatSchedule ScheduleParser::parseAllSatellites(
             result.satellite_tasks[sat_id] = tasks;
         }
         
+        // 解析卫星节点信息
+        for (auto& satellite : schedule_json["satellites"]) {
+            SatelliteInfo sat_info;
+            sat_info.satellite_id = satellite.value("satellite_id", "");
+            sat_info.node_id = satellite.value("node_id", "");
+            sat_info.name = satellite.value("name", "");
+            sat_info.status = satellite.value("status", "UNKNOWN");
+            
+            if (satellite.contains("system_state")) {
+                auto& state = satellite["system_state"];
+                sat_info.battery_percent = state.value("battery_percent", 0);
+                sat_info.storage_available_mb = state.value("storage_available_mb", 0);
+                sat_info.payload_status = state.value("payload_status", "");
+                sat_info.thermal_status = state.value("thermal_status", "");
+            }
+            
+            result.satellites.push_back(sat_info);
+        }
+        
         std::cout << "解析完成，共 " << result.satellite_ids.size() 
                   << " 颗卫星" << std::endl;
         
@@ -239,6 +263,57 @@ ScheduleParser::MultiSatSchedule ScheduleParser::parseAllSatellites(
     }
     
     return result;
+}
+
+// ============ 解析卫星节点信息 ============
+std::vector<SatelliteInfo> ScheduleParser::parseSatelliteNodes(
+    const std::string& schedule_file) {
+    
+    std::vector<SatelliteInfo> satellites;
+    
+    try {
+        std::ifstream file(schedule_file);
+        if (!file.is_open()) {
+            std::cerr << "无法打开调度文件: " << schedule_file << std::endl;
+            return satellites;
+        }
+        
+        json schedule_json;
+        file >> schedule_json;
+        file.close();
+        
+        if (!schedule_json.contains("satellites")) {
+            std::cerr << "调度文件缺少satellites字段" << std::endl;
+            return satellites;
+        }
+        
+        for (auto& satellite : schedule_json["satellites"]) {
+            SatelliteInfo sat_info;
+            sat_info.satellite_id = satellite.value("satellite_id", "");
+            sat_info.node_id = satellite.value("node_id", "");
+            sat_info.name = satellite.value("name", "");
+            sat_info.status = satellite.value("status", "UNKNOWN");
+            
+            if (satellite.contains("system_state")) {
+                auto& state = satellite["system_state"];
+                sat_info.battery_percent = state.value("battery_percent", 0);
+                sat_info.storage_available_mb = state.value("storage_available_mb", 0);
+                sat_info.payload_status = state.value("payload_status", "");
+                sat_info.thermal_status = state.value("thermal_status", "");
+            }
+            
+            satellites.push_back(sat_info);
+            std::cout << "  解析卫星节点: " << sat_info.satellite_id 
+                      << " (node_id: " << sat_info.node_id << ")" << std::endl;
+        }
+        
+        std::cout << "卫星节点解析完成，共 " << satellites.size() << " 个节点" << std::endl;
+        
+    } catch (const json::exception& e) {
+        std::cerr << "JSON解析错误: " << e.what() << std::endl;
+    }
+    
+    return satellites;
 }
 
 // ============ 新增：全局配置解析 ============
@@ -296,7 +371,6 @@ GlobalConfigParser::GlobalConfig GlobalConfigParser::parse(
             }
         }
         
-        // 解析同步点
         if (config_json.contains("sync_points") && 
             config_json["sync_points"].contains("barriers")) {
             for (auto& barrier : config_json["sync_points"]["barriers"]) {
@@ -316,7 +390,6 @@ GlobalConfigParser::GlobalConfig GlobalConfigParser::parse(
             }
         }
         
-        // 解析资源分配策略
         if (config_json.contains("resource_allocation_policy")) {
             auto& policy = config_json["resource_allocation_policy"];
             config.deadlock_detection = policy.value("deadlock_detection", false);
